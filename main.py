@@ -2,9 +2,6 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from dotenv import load_dotenv
 import os
-import ast
-import astor
-import openai
 from clear_screen import clear_screen
 
 load_dotenv()
@@ -13,21 +10,26 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 EMBEDDINGS_SIZE_LARGE = 3072
 EMBEDDINGS_SIZE_SMALL = 1536
 
-embeddings = OpenAIEmbeddings( model ="text-embedding-3-large", openai_api_key=OPENAI_API_KEY)
-
 def get_openai_embedding_model():
-    load_dotenv()
-    openai.api_key = os.getenv("OPENAI_API_KEY")
-    return OpenAIEmbeddings()
+    try:
+        return OpenAIEmbeddings( model ="text-embedding-3-large", openai_api_key=OPENAI_API_KEY)
+    except:
+        raise ConnectionError("Error loading OpenAI embeddings")
 
-def get_faiss_vector_store():
-    return FAISS.load_local("./python_code_library_FAISS", embeddings=embeddings, allow_dangerous_deserialization= True)
+
+def get_faiss_vector_store(path, embeddings):
+    return FAISS.load_local(path, embeddings=embeddings, allow_dangerous_deserialization= True)
 
 def search_similarities(library, query):
-    return library.similarity_search(query, 5)
+    try:
+        return library.similarity_search(query, 5)
+    except:
+        raise ConnectionError("Error searching similarities")
 
 if __name__ == "__main__":
-    library = get_faiss_vector_store()
+    local_VDB_path = "./python_code_library_FAISS"
+    embeddings = get_openai_embedding_model()
+    library = get_faiss_vector_store(path=local_VDB_path, embeddings=embeddings)
     print("main is running")
     while True:
         clear_screen()
