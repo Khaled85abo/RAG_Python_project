@@ -3,6 +3,7 @@ from langchain_community.vectorstores import FAISS
 from dotenv import load_dotenv
 import os
 from clear_screen import clear_screen
+from llama3_lm import llama3_lm
 
 load_dotenv()
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
@@ -46,4 +47,6 @@ if __name__ == "__main__":
             print(f"Name: {query_answer[answer].metadata['name']}")
             print(f"Page content: {query_answer[answer].page_content}")
             print("------------------------------------------")
+        llama3_answer = llama3_lm(f"{query} {query_answer}")
+        print(f"answer from llama3: {llama3_answer}")
         input("Press Enter to continue...")

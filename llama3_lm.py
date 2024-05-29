@@ -11,7 +11,6 @@ data = {
 def llama3_lm(prompt: str):
     data["prompt"] = prompt
     try:
-        print(f"Data: {data}")
         res = requests.post(url=URL, data=json.dumps(data), headers={"Content-Type": "application/json"})
         res = res.json()
         return res["response"]
@@ -22,5 +21,5 @@ def llama3_lm(prompt: str):
 if __name__ == "__main__":
     prompt = input("prompt: ")
     answer = llama3_lm(prompt=prompt)
-    print(answer)
+    print(answer.response)
     print("---------------------")
